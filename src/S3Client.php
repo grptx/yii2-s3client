@@ -58,9 +58,11 @@ class S3Client extends Component
     }
 
     /**
-     * @param string $localObjectPath
-     * @param string|null $storageSavePath
-     * @param string|null $bucket
+     * put file to minio/s3 server
+     *
+     * @param string $localObjectPath full path to file to put
+     * @param string|null $storageSavePath full path to file in bucket (optional)
+     * @param string|null $bucket the bucket name (optional)
      * @return Result|bool
      */
     public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null)
@@ -93,6 +95,8 @@ class S3Client extends Component
     }
 
     /**
+     * create and put a file into minio/s3 server with the specified content
+     *
      * @param string $content
      * @param string $storageSavePath
      * @param string $bucket
@@ -124,6 +128,8 @@ class S3Client extends Component
     }
 
     /**
+     * get file object from minio/s3 server
+     *
      * @param string $storageSavePath
      * @param string|null $localSaveAsPath
      * @param string|null $bucket
