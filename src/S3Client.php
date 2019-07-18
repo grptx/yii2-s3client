@@ -125,6 +125,41 @@ class S3Client extends Component
 
     /**
      * @param string $storageSavePath
+     * @param string|null $localSaveAsPath
+     * @param string|null $bucket
+     * @return bool|mixed
+     */
+    public function getObject(string $storageSavePath, string $localSaveAsPath = null, string $bucket = null)
+    {
+        if (is_null($bucket)) {
+            $bucket = $this->defaultBucket;
+        }
+
+        if (empty($bucket)) {
+            return false;
+        }
+
+        try {
+            $param = [
+                'Bucket' => $bucket,
+                'Key' => $storageSavePath,
+            ];
+            if (!is_null($localSaveAsPath)) {
+                $param = [
+                    'SaveAs' => $localSaveAsPath
+                ];
+            }
+
+            $result = $this->S3Client->getObject($param);
+            return $result['Body'];
+        } catch (AwsException $awsException) {
+            return false;
+        }
+
+    }
+
+    /**
+     * @param string $storageSavePath
      * @return string
      * @author klinson <klinson@163.com>
      */
