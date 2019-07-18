@@ -1,5 +1,10 @@
 # yii2-S3Client
 
+[![Latest Stable Version](https://poser.pugx.org/grptx/yii2-s3client/v/stable)](https://packagist.org/packages/grptx/yii2-s3client)
+[![Total Downloads](https://poser.pugx.org/grptx/yii2-s3client/downloads)](https://packagist.org/packages/grptx/yii2-s3client)
+[![Latest Unstable Version](https://poser.pugx.org/grptx/yii2-s3client/v/unstable)](https://packagist.org/packages/grptx/yii2-s3client)
+[![License](https://poser.pugx.org/grptx/yii2-s3client/license)](https://packagist.org/packages/grptx/yii2-s3client)
+
 Yii2 S3Client based on [klinson/aws-s3-minio](https://github.com/klinson/aws-s3-minio)
 
 ## Configuration
