@@ -1,0 +1,28 @@
+{
+    "name": "grptx/yii2-s3client",
+    "type": "yii2-component",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "roberto rossetti",
+            "email": "robertorossetti3.14@gmail.com"
+        }
+    ],
+    "keywords": [
+        "yii2",
+        "yii2-components",
+        "s3client",
+        "minio",
+        "php7"
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "yiisoft/yii2": "^2",
+        "aws/aws-sdk-php": "^3"
+    },
+    "autoload": {
+        "psr-4": {
+            "grptx\\": "src"
+        }
+    }
+}
