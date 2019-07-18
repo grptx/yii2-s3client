@@ -2,6 +2,8 @@
 
 namespace grptx;
 
+use Aws\Exception\AwsException;
+use Aws\Result;
 use yii\base\Component;
 
 class S3Client extends Component
@@ -15,9 +17,11 @@ class S3Client extends Component
 
     public $region;
 
-    public $version;
+    public $version = 'latest';
 
     public $endpoint;
+
+    public $profile = 'default';
 
     public $use_path_style_endpoint = true;
 
@@ -33,7 +37,7 @@ class S3Client extends Component
                     'secret' => $this->secret ?? '',
                 ],
                 'region' => $this->region ?? '',
-                'version' => $this->version ?? '',
+                'version' => $this->version ?? 'latest',
                 'endpoint' => $this->endpoint ?? '',
                 'use_path_style_endpoint' => true,
             ]);
@@ -42,5 +46,36 @@ class S3Client extends Component
         return $this->S3Client;
     }
 
+    /**
+     * @param string $content
+     * @param string $storageSavePath
+     * @param string $bucket
+     * @return Result|bool
+     */
+    public function putObjectContent(string $content, string $storageSavePath, string $bucket)
+    {
+        try {
+            $storageSavePath = $this->formatStorageSavePath($storageSavePath);
 
+            $result = $this->S3Client->putObject([
+                'Bucket' => $bucket,
+                'Key'    => $storageSavePath,
+                'Body'   => $content
+            ]);
+
+            return $result;
+        } catch (AwsException $awsException) {
+            return false;
+        }
+    }
+
+    /**
+     * @param string $storageSavePath
+     * @author klinson <klinson@163.com>
+     * @return string
+     */
+    private function formatStorageSavePath(string $storageSavePath)
+    {
+        return trim($storageSavePath, '/');
+    }
 }
