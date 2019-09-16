@@ -63,9 +63,10 @@ class S3Client extends Component
      * @param string $localObjectPath full path to file to put
      * @param string|null $storageSavePath full path to file in bucket (optional)
      * @param string|null $bucket the bucket name (optional)
+     * @param array $meta
      * @return Result|bool
      */
-    public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null)
+    public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null, $meta = [])
     {
         if (is_null($bucket)) {
             $bucket = $this->defaultBucket;
@@ -79,13 +80,23 @@ class S3Client extends Component
             $storageSavePath = $localObjectPath;
         }
 
+        if (!empty($meta)) {
+            foreach ($meta as $k => $v) {
+                unset($meta[$k]);
+                if(is_null($v)) continue;
+                $v = (string) $v;
+                $meta[$k] = $v;
+            }
+        }
+
         try {
             $storageSavePath = $this->formatStorageSavePath($storageSavePath);
 
             $result = $this->S3Client->putObject([
                 'Bucket' => $bucket,
                 'Key' => $storageSavePath,
-                'SourceFile' => $localObjectPath
+                'SourceFile' => $localObjectPath,
+                'Metadata' => $meta
             ]);
 
             return $result;
