@@ -56,11 +56,26 @@ class S3Client extends Component
                 'endpoint' => $this->endpoint ?? '',
                 'use_path_style_endpoint' => true,
                 'debug' => $this->debug,
-                'http'=> $this->http
+                'http' => $this->http
             ]);
         }
 
         return $this->S3Client;
+    }
+
+    public function createBucket(String $bucket = null)
+    {
+        if (is_null($bucket)) {
+            return false;
+        }
+        try {
+            $result = $this->S3Client->createBucket([
+                'Bucket' => $bucket,
+            ]);
+            return $bucket;
+        } catch (AwsException $awsException) {
+            return false;
+        }
     }
 
     /**
@@ -81,6 +96,8 @@ class S3Client extends Component
         if (empty($bucket)) {
             return false;
         }
+
+        $this->createBucket($bucket);
 
         if ($storageSavePath === null) {
             $storageSavePath = $localObjectPath;
@@ -122,6 +139,8 @@ class S3Client extends Component
         if (empty($bucket)) {
             return false;
         }
+
+        $this->createBucket($bucket);
 
         $meta = $this->cleanMeta($meta);
 
@@ -192,12 +211,13 @@ class S3Client extends Component
      * @param array $meta
      * @return array
      */
-    private function cleanMeta(array $meta): array {
+    private function cleanMeta(array $meta): array
+    {
         if (!empty($meta)) {
             foreach ($meta as $k => $v) {
                 unset($meta[$k]);
-                if(is_null($v)) continue;
-                $v = (string) $v;
+                if (is_null($v)) continue;
+                $v = (string)$v;
                 $meta[$k] = $v;
             }
         }
