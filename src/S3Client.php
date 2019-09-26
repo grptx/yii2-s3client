@@ -25,6 +25,12 @@ class S3Client extends Component
 
     public $defaultBucket;
 
+    public $debug = false;
+
+    public $http = [
+        'verify' => true
+    ];
+
     public function init()
     {
         parent::init();
@@ -49,6 +55,8 @@ class S3Client extends Component
                 'version' => $this->version ?? 'latest',
                 'endpoint' => $this->endpoint ?? '',
                 'use_path_style_endpoint' => true,
+                'debug' => $this->debug,
+                'http'=> $this->http
             ]);
         }
 
