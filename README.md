@@ -12,12 +12,12 @@ Yii2 S3Client based on [klinson/aws-s3-minio](https://github.com/klinson/aws-s3-
 
 Preferred way to install is through [Composer](https://getcomposer.org): 
 ```shell
-php composer.phar require grptx/yii2-s3client:^1.0
+php composer.phar require grptx/yii2-s3client:^1
 ```
 Or, you may add
 
 ```php
-"grptx/yii2-s3client": "^1.0"
+"grptx/yii2-s3client": "^1"
 ```
 
 to the require section of your `composer.json` file and execute `php composer.phar update`.
