@@ -23,8 +23,6 @@ class S3Client extends Component
 
     public $profile = 'default';
 
-    public $use_path_style_endpoint = true;
-
     public $defaultBucket;
 
     public function init()
@@ -66,7 +64,7 @@ class S3Client extends Component
      * @param array $meta
      * @return Result|bool
      */
-    public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null, $meta = [])
+    public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null, array $meta = [])
     {
         if (is_null($bucket)) {
             $bucket = $this->defaultBucket;
@@ -80,14 +78,7 @@ class S3Client extends Component
             $storageSavePath = $localObjectPath;
         }
 
-        if (!empty($meta)) {
-            foreach ($meta as $k => $v) {
-                unset($meta[$k]);
-                if(is_null($v)) continue;
-                $v = (string) $v;
-                $meta[$k] = $v;
-            }
-        }
+        $meta = $this->cleanMeta($meta);
 
         try {
             $storageSavePath = $this->formatStorageSavePath($storageSavePath);
@@ -111,9 +102,10 @@ class S3Client extends Component
      * @param string $content
      * @param string $storageSavePath
      * @param string $bucket
+     * @param array $meta
      * @return Result|bool
      */
-    public function putObjectByContent(string $content, string $storageSavePath, string $bucket = null)
+    public function putObjectByContent(string $content, string $storageSavePath, string $bucket = null, array $meta = [])
     {
         if (is_null($bucket)) {
             $bucket = $this->defaultBucket;
@@ -123,13 +115,16 @@ class S3Client extends Component
             return false;
         }
 
+        $meta = $this->cleanMeta($meta);
+
         try {
             $storageSavePath = $this->formatStorageSavePath($storageSavePath);
 
             $result = $this->S3Client->putObject([
                 'Bucket' => $bucket,
                 'Key' => $storageSavePath,
-                'Body' => $content
+                'Body' => $content,
+                'Metadata' => $meta
             ]);
 
             return $result;
@@ -183,5 +178,21 @@ class S3Client extends Component
     private function formatStorageSavePath(string $storageSavePath)
     {
         return trim($storageSavePath, '/');
+    }
+
+    /**
+     * @param array $meta
+     * @return array
+     */
+    private function cleanMeta(array $meta): array {
+        if (!empty($meta)) {
+            foreach ($meta as $k => $v) {
+                unset($meta[$k]);
+                if(is_null($v)) continue;
+                $v = (string) $v;
+                $meta[$k] = $v;
+            }
+        }
+        return $meta;
     }
 }
