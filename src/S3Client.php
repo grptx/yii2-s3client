@@ -184,7 +184,7 @@ class S3Client extends Component
                 'Key' => $storageSavePath,
             ];
             if (!is_null($localSaveAsPath)) {
-                $param = [
+                $param[] = [
                     'SaveAs' => $localSaveAsPath
                 ];
             }
