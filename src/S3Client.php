@@ -2,6 +2,7 @@
 
 namespace grptx;
 
+use Aws\Acm\Exception\AcmException;
 use Aws\Exception\AwsException;
 use Aws\Result;
 use yii\base\Component;
@@ -87,6 +88,7 @@ class S3Client extends Component
      * @param array $meta
      * @param array $tags
      * @return Result|bool
+     * @throws AcmException
      */
     public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null, array $meta = [], array $tags = [])
     {
@@ -107,21 +109,19 @@ class S3Client extends Component
         $meta = $this->cleanMeta($meta);
         $tags = $this->normalizeTags($tags);
 
-        try {
-            $storageSavePath = $this->formatStorageSavePath($storageSavePath);
 
-            $result = $this->S3Client->putObject([
-                'Bucket' => $bucket,
-                'Key' => $storageSavePath,
-                'SourceFile' => $localObjectPath,
-                'Metadata' => $meta,
-                'Tagging' => $tags,
-            ]);
+        $storageSavePath = $this->formatStorageSavePath($storageSavePath);
 
-            return $result;
-        } catch (AwsException $awsException) {
-            return false;
-        }
+        $result = $this->S3Client->putObject([
+            'Bucket' => $bucket,
+            'Key' => $storageSavePath,
+            'SourceFile' => $localObjectPath,
+            'Metadata' => $meta,
+            'Tagging' => $tags,
+        ]);
+
+        return $result;
+
     }
 
     /**
@@ -133,6 +133,7 @@ class S3Client extends Component
      * @param array $meta
      * @param array $tags
      * @return Result|bool
+     * @throws AcmException
      */
     public function putObjectByContent(string $content, string $storageSavePath, string $bucket = null, array $meta = [], array $tags = [])
     {
@@ -149,21 +150,19 @@ class S3Client extends Component
         $meta = $this->cleanMeta($meta);
         $tags = $this->normalizeTags($tags);
 
-        try {
-            $storageSavePath = $this->formatStorageSavePath($storageSavePath);
 
-            $result = $this->S3Client->putObject([
-                'Bucket' => $bucket,
-                'Key' => $storageSavePath,
-                'Body' => $content,
-                'Metadata' => $meta,
-                'Tagging' => $tags,
-            ]);
+        $storageSavePath = $this->formatStorageSavePath($storageSavePath);
 
-            return $result;
-        } catch (AwsException $awsException) {
-            return false;
-        }
+        $result = $this->S3Client->putObject([
+            'Bucket' => $bucket,
+            'Key' => $storageSavePath,
+            'Body' => $content,
+            'Metadata' => $meta,
+            'Tagging' => $tags,
+        ]);
+
+        return $result;
+
     }
 
     /**
