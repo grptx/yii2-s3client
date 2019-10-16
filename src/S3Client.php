@@ -85,9 +85,10 @@ class S3Client extends Component
      * @param string|null $storageSavePath full path to file in bucket (optional)
      * @param string|null $bucket the bucket name (optional)
      * @param array $meta
+     * @param array $tags
      * @return Result|bool
      */
-    public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null, array $meta = [])
+    public function putObjectByPath(string $localObjectPath, string $storageSavePath = null, string $bucket = null, array $meta = [], array $tags = [])
     {
         if (is_null($bucket)) {
             $bucket = $this->defaultBucket;
@@ -104,6 +105,7 @@ class S3Client extends Component
         }
 
         $meta = $this->cleanMeta($meta);
+        $tags = $this->normalizeTags($tags);
 
         try {
             $storageSavePath = $this->formatStorageSavePath($storageSavePath);
@@ -112,7 +114,8 @@ class S3Client extends Component
                 'Bucket' => $bucket,
                 'Key' => $storageSavePath,
                 'SourceFile' => $localObjectPath,
-                'Metadata' => $meta
+                'Metadata' => $meta,
+                'Tagging' => $tags,
             ]);
 
             return $result;
@@ -128,9 +131,10 @@ class S3Client extends Component
      * @param string $storageSavePath
      * @param string $bucket
      * @param array $meta
+     * @param array $tags
      * @return Result|bool
      */
-    public function putObjectByContent(string $content, string $storageSavePath, string $bucket = null, array $meta = [])
+    public function putObjectByContent(string $content, string $storageSavePath, string $bucket = null, array $meta = [], array $tags = [])
     {
         if (is_null($bucket)) {
             $bucket = $this->defaultBucket;
@@ -143,6 +147,7 @@ class S3Client extends Component
         $this->createBucket($bucket);
 
         $meta = $this->cleanMeta($meta);
+        $tags = $this->normalizeTags($tags);
 
         try {
             $storageSavePath = $this->formatStorageSavePath($storageSavePath);
@@ -151,7 +156,8 @@ class S3Client extends Component
                 'Bucket' => $bucket,
                 'Key' => $storageSavePath,
                 'Body' => $content,
-                'Metadata' => $meta
+                'Metadata' => $meta,
+                'Tagging' => $tags,
             ]);
 
             return $result;
@@ -222,5 +228,11 @@ class S3Client extends Component
             }
         }
         return $meta;
+    }
+
+    private function normalizeTags(array $tags): string
+    {
+        if (empty($tags)) return null;
+        return http_build_query($tags);
     }
 }
